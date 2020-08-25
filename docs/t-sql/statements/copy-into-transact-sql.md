@@ -133,9 +133,9 @@ Multiple file locations can only be specified from the same storage account and 
 *CREDENTIAL (IDENTITY = ‘’, SECRET = ‘’)*</br>
 *CREDENTIAL* specifies the authentication mechanism to access the external storage account. Authentication methods are:
 
-|                          |                CSV                |              Parquet               |                ORC                 |
-| :----------------------: | :-------------------------------: | :-------------------------------:  | :-------------------------------:  |
-|  **Azure blob storage**  | SAS/MSI/SERVICE PRINCIPAL/KEY/AAD |              SAS/KEY               |              SAS/KEY               |
+|                          |                CSV                |                           Parquet                            |                             ORC                              |
+| :----------------------: | :-------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|  **Azure blob storage**  | SAS/MSI/SERVICE PRINCIPAL/KEY/AAD |                           SAS/KEY                            |                           SAS/KEY                            |
 | **Azure Data Lake Gen2** | SAS/MSI/SERVICE PRINCIPAL/KEY/AAD | SAS (blob endpoint)/MSI (dfs endpoint)/SERVICE PRINCIPAL/KEY/AAD | SAS (blob endpoint)/MSI (dfs endpoint)/SERVICE PRINCIPAL/KEY/AAD |
 
 
@@ -426,8 +426,17 @@ The COPY command will be generally available by the end of this calendar year (2
 ### Are there any limitations on the number or size of files?
 There are no limitations on the number or size of files; however, for best performance, we recommend files that are at least 4MB.
 
-
 Please send any feedback or issues to the following distribution list: sqldwcopypreview@service.microsoft.com
+
+### Are there any limitations with COPY using Synapse workspaces (preview)?
+
+Authenticating using Managed Identity (MSI) is not supported with the COPY statement or PolyBase to load (including when used in pipelines). You may run into a similiar error message:
+
+*com.microsoft.sqlserver.jdbc.SQLServerException: Managed Service Identity has not been enabled on this server. Please enable Managed Service Identity and try again.*
+
+MSI authentication is required when the storage account is associated with a VNet. This limitation is only applicable to SQL pools belonging to a Synapse workspace (preview). 
+
+If your storage account is attached to a VNet, you must use BCP/Bulk insert to load data. We will enable MSI support in an upcoming release. 
 
 ## See also  
 
